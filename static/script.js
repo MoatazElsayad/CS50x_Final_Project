@@ -185,25 +185,25 @@ const langs = [
     {
         name: "HTML",
         class: "html",
-        percent: 40,
+        percent: 31.0,
         image: "html.svg"
     },
     {
         name: "CSS",
         class: "css",
-        percent: 30,
+        percent: 35.8,
         image: "css.svg"
     },
     {
         name: "JavaScript",
         class: "js",
-        percent: 30,
+        percent: 7.5,
         image: "js.svg"
     },
     {
         name: "Python",
         class: "py",
-        percent: 59,
+        percent: 25.7,
         image: "python.svg"
     }
 ]
