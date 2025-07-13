@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="login-card">
+        <h2 class="login-title">Login to Your Account</h2>
+
+        {% if error %}
+            <div class="custom-alert">{{ error }}</div>
+        {% endif %}
+
+        <form action="/login" method="POST" class="login-form">
+            <div class="text-field">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required autofocus>
+            </div>
+            <div class="text-field">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <div class="login-btn-container">
+                <button type="submit" class="login-btn">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

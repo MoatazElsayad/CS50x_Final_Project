@@ -1,0 +1,227 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="centered-content">
+        <h1 class="welcome-heading">
+            {% if result %}
+                Convert {{ currency_info[from_currency].currency }} to {{ currency_info[to_currency].currency }}
+            {% else %}
+                {% if session.get("user_id") %}
+                    Welcome back, {{ session.get("username") }}!
+                {% else %}
+                    Welcome to MB Currency Converter!
+                {% endif %}
+            {% endif %}
+        </h1>
+        <p class="sub-heading">
+            {% if result %}
+                MB Currency Converter
+            {% else %}
+                Check live foreign currency exchange rates
+            {% endif %}
+        </p>
+        <p class="sub-heading">
+            {% if not session.get("user_id") %}
+                Login for full experience.
+            {% endif %}
+        </p>
+
+        <!-- The converion card -->
+        <div class="conversion-card">
+            <!-- Suggest most traded pairs -->
+            {% if most_traded %}
+            <div class="suggested-pairs-box">
+                <p class="common-pairs">Common Currency Pairs:</p>
+                <div class="suggested-pairs">
+                    {% for from_cur, to_cur in most_traded %}
+                    <button type="button" class="pair-btn" onclick="applyPair('{{ from_cur }}', '{{ to_cur }}')">
+                    <span class="fi fi-{{ currency_info[from_cur].flag }}"></span>{{ from_cur }} →
+                    <span class="fi fi-{{ currency_info[to_cur].flag }}"></span>{{ to_cur }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Favorite Heart Button -->
+            {% if session.get("user_id") and result %}
+            <form class="favorite-form" data-from="{{ from_currency }}" data-to="{{ to_currency }}">
+                <button type="button" class="favorite-btn" aria-label="Toggle Favorite">
+                    <div class="fav-heart-container">
+                        <img
+                            src="{{ 'static/images/heart-filled.svg' if is_favorite else 'static/images/heart-empty.svg' }}"
+                            class="fav-heart-icon"
+                            alt="Favorite Icon"
+                        >
+                        <span class="fav-heart-label">
+                            {{ 'In Favorites' if is_favorite else 'Add to Favorites' }}
+                        </span>
+                    </div>
+                </button>
+            </form>
+            {% endif %}
+
+
+            <!-- Error Message: API not fetched -->
+            {% if error %}
+            <div class="custom-alert">{{ error }}</div>
+            {% endif %}
+
+            <!-- Conversion Form: Selects and Amount -->
+            <form method="POST" class="conversion-form">
+                <div class="conversion-row">
+                    <div class="form-group input-with-symbol">
+                        <input type="number" name="amount" step="0.01" value="{{ amount or 1 }}" class="amount-input" required>
+                        <label calss="amount">Amount</label>
+                    </div>
+
+                    <div class="form-group">
+                        <select name="from_currency" class="currency-select flag-select" id="from-currency" required>
+                            {% for code, info in currency_info.items() %}
+                                <option value="{{ code }}" data-flag="{{ info.flag }}" {% if code == from_currency %}selected{% endif %}>
+                                    {{ code }} - {{ info.currency }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <label class="from">From</label>
+                    </div>
+
+                    <!-- Switch Button: reversing the currencies -->
+                    <button type="button" class="switch-btn" onclick="switchCurrencies()" aria-label="Switch currencies"><img src="static/images/reverse.svg" class="reverse-icon" alt="Reverse"></button>
+
+                    <div class="form-group">
+                        <select name="to_currency" class="currency-select flag-select" id="to-currency" required>
+                            {% for code, info in currency_info.items() %}
+                                <option value="{{ code }}" data-flag="{{ info.flag }}" {% if code == to_currency %}selected{% endif %}>
+                                    {{ code }} - {{ info.currency }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <label class="to">To</label>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <div class="convert-btn-row">
+                    <button type="submit" class="convert-btn">Convert</button>
+                </div>
+            </form>
+
+            <!-- Conversion Result -->
+            {% if result %}
+            <div class="conversion-result">
+                <div class="result-main">
+                    <span class="result-amount-from"><p>{{ amount }} {{ currency_info[from_currency].currency }} =</p></span>
+                    <span class="result-amount"><p>{{ result.converted_amount }} {{ currency_info[to_currency].currency }}</p></span>
+                </div>
+                <div class="result-rate">
+                    <p>1 {{ result.from }} = {{ result.rate }} {{ result.to }}</p>
+                    <p>1 {{ result.to }} = {{ (reverse_table[0].converted / 10) | round(4) }} {{ result.from }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <p class="conversion-disclaimer"><span><img src="static/images/info.svg" alt="Info"></span>Exchange rates are provided by <a href="https://app.exchangerate-api.com/" target="_blank">exchangerate-api.com</a> and may not be fully accurate. This tool is intended for educational purposes only.</p>
+
+        <!-- Common Converoins Tables -->
+        {% if conversion_table %}
+        <div class="common-conversions-container">
+            <h1>Common Conversions</h1>
+            <div class="conversions-grid">
+                <div class="conversions-box">
+                    <table class="table table-bordered w-100">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="fi fi-{{ currency_info[from_currency].flag }}"></span>
+                                    {{ currency_info[from_currency].currency }}
+                                </th>
+                                <th>
+                                    <span class="fi fi-{{ currency_info[to_currency].flag }}"></span>
+                                    {{ currency_info[to_currency].currency }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in conversion_table %}
+                            <tr>
+                                <td>{{ row.amount }} {{ from_currency }}</td>
+                                <td>{{ row.converted }} {{ to_currency }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="conversions-box">
+                    <table class="table table-bordered w-100">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="fi fi-{{ currency_info[to_currency].flag }}"></span>
+                                    {{ currency_info[to_currency].currency }}
+                                </th>
+                                <th>
+                                    <span class="fi fi-{{ currency_info[from_currency].flag }}"></span>
+                                    {{ currency_info[from_currency].currency }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in reverse_table %}
+                            <tr>
+                                <td>{{ row.amount }} {{ to_currency }}</td>
+                                <td>{{ row.converted }} {{ from_currency }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Currencies information cards: from and to currencies -->
+        {% if result %}
+        <h1>Currency Information</h1>
+        <p class="sub-cur-info">Know More About {{ from_currency }} & {{ to_currency }}, the most popular currency pairs</p>
+        <div class="currency-info-grid">
+            <div class="currency-info-box">
+                {% if from_currency and from_currency in currency_info %}
+                    <div class="currency-title-row">
+                        <span class="fi fi-{{ currency_info[from_currency].flag }} me-2"></span>
+                        <p class="currency-title">{{ from_currency }} - {{ currency_info[from_currency].currency }}</p>
+                    </div>
+                {% endif %}
+
+                <p class="info">
+                    {% if from_currency and from_currency in currency_info %}
+                        The <b>{{ currency_info[from_currency].currency }}</b> ({{ from_currency }}) is the official currency of <b>{{ currency_info[from_currency].country}}</b> and its overseas territories. Represented by the symbol <b>{{ currency_info[from_currency].symbol }}</b>, it is subdivided into 100 units.
+                    {% endif %}
+                </p>
+
+                <a href="{{ currencies_wiki.from }}" class="wiki-link" target="_blank">{{ currency_info[from_currency].currency }}<img src="static/images/arrow.svg"></a>
+            </div>
+
+            <div class="currency-info-box">
+                {% if to_currency and to_currency in currency_info %}
+                    <div class="currency-title-row">
+                        <span class="fi fi-{{ currency_info[to_currency].flag }} me-2"></span>
+                        <p class="currency-title">{{ to_currency }} - {{ currency_info[to_currency].currency }}</p>
+                    </div>
+                {% endif %}
+
+                <p class="info">
+                    {% if to_currency and to_currency in currency_info %}
+                        The <b>{{ currency_info[to_currency].currency }}</b> ({{ to_currency }}) is the official currency of <b>{{ currency_info[to_currency].country }}</b> and its overseas territories. Represented by the symbol <b>{{ currency_info[to_currency].symbol }}</b>, it is subdivided into 100 units.
+                    {% endif %}
+                </p>
+
+                <a href="{{ currencies_wiki.to }}" class="wiki-link" target="_blank">{{ currency_info[to_currency].currency }}<img src="static/images/arrow.svg"></a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

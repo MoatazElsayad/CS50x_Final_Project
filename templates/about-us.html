@@ -1,0 +1,172 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="about-container">
+    <div class="about-header about-header-grid">
+        <img src="../static/images/moataz.jpg" alt="Moataz Badawy" class="profile-pic">
+        <div class="about-info">
+            <p class="gradient-text">Moataz Badawy</p>
+            <div class="bio-container">
+                <p class="uni">Cairo University</p>
+                <p class="faculty">Computer Science Student</p>
+                <p class="bio">
+                    Hello, and welcome to my portfolio! My name is Moataz Badawy, and I was born in Luxor, Egypt. I’m deeply passionate about computer science and its powerful role in solving real-world challenges. This year, I’ve taken a gap year with the goal of strengthening my programming abilities while also developing valuable leadership and communication skills. I was proud to be a USAID Scholars Awardee before the program was suspended—a milestone that reflects my dedication to academic and personal growth. As you explore this portfolio, you’ll learn more about my journey, skills, and aspirations in the field of technology.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="resume-container">
+    <div class="resume-grid">
+        <div class="resume-desc">
+            <h1>Resume</h1>
+            <p class="resume-date">Current as of July 2025</p>
+            <div class="resume-summary-container">
+                <p class="summary">Resume Summary:</p>
+                <p class="resume-summary">
+                    Moataz Badawy is an aspiring computer science student from Luxor, Egypt, passionate about using technology to solve real-world problems. He has strong skills in programming, web development, and embedded systems, and has completed programs like Harvard’s CS50x and the USAID Scholars Award. Moataz is also active in community service and leadership, aiming to blend tech and impact in his future career.
+                </p>
+                <p class="gpt">Summarized by ChatGPT</p>
+            </div>
+        </div>
+        <div class="resume-pdf">
+            <iframe src="{{ url_for('static', filename='files/resume.pdf') }}" width="100%" height="500px"></iframe>
+        </div>
+    </div>
+</div>
+
+<div class="skills-container">
+    <div class="skills">
+        <h1>Skills</h1>
+        <hr class="uline">
+        <div class="programming-grid">
+            <div class="programming-title">
+                <h2>Programming Skills</h2>
+                <p class="programming-sub-title">Core languages I've studied and practiced throughout my journey.</p>
+            </div>
+            <div class="programming-skills">
+                <div class="skills-section">
+                    <div class="skill">
+                        <label>
+                            <img class="lang-icon" src="../static/images/tools/python.svg">
+                            Python
+                        </label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 90%;">Proficient</div>
+                        </div>
+                    </div>
+
+                    <div class="skill">
+                        <label>
+                            <img class="lang-icon" src="../static/images/tools/js.svg">
+                            JavaScript
+                        </label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 70%;">Intermediate</div>
+                        </div>
+                    </div>
+
+                    <div class="skill">
+                        <label>
+                            <img class="lang-icon" src="../static/images/tools/c.svg">
+                            C
+                        </label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 60%;">Intermediate</div>
+                        </div>
+                    </div>
+
+                    <div class="skill">
+                        <label>
+                            <img class="lang-icon" src="../static/images/tools/cpp.svg">
+                            C++
+                        </label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 85%;">Proficient</div>
+                        </div>
+                    </div>
+
+                    <div class="skill">
+                        <label>
+                            <img class="lang-icon" src="../static/images/tools/html.svg">
+                            HTML
+                        </label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 80%;">Proficient</div>
+                        </div>
+                    </div>
+
+                    <div class="skill">
+                        <label>
+                            <img class="lang-icon" src="../static/images/tools/css.svg">
+                            CSS
+                        </label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%;">Proficient</div>
+                        </div>
+                    </div>
+
+                    <div class="skill">
+                        <label>
+                            <img class="lang-icon" src="../static/images/tools/sql.svg">
+                            SQL
+                        </label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 65%;">Intermediate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tools-grid">
+            <div class="tools-tech">
+                <div class="tool-item">
+                    <img src="../static/images/tools/git.svg" alt="Git" class="tool-icon">
+                    <span>Git</span>
+                </div>
+                <div class="tool-item">
+                    <img src="../static/images/tools/github.svg" alt="GitHub" class="tool-icon">
+                    <span>GitHub</span>
+                </div>
+                <div class="tool-item">
+                    <img src="../static/images/tools/flask.svg" alt="Flask" class="tool-icon">
+                    <span>Flask</span>
+                </div>
+                <div class="tool-item">
+                    <img src="../static/images/tools/react.svg" alt="React" class="tool-icon">
+                    <span>React</span>
+                </div>
+                <div class="tool-item">
+                    <img src="../static/images/tools/vscode.svg" alt="VS Code" class="tool-icon">
+                    <span>VS Code</span>
+                </div>
+                <div class="tool-item">
+                    <img src="../static/images/tools/sqlite.svg" alt="sqlite" class="tool-icon">
+                    <span>sqlite</span>
+                </div>
+                <div class="tool-item">
+                    <img src="../static/images/tools/api.svg" alt="APIs" class="tool-icon">
+                    <span>APIs</span>
+                </div>
+                <div class="tool-item">
+                    <img src="../static/images/tools/json.svg" alt="APIs" class="tool-icon">
+                    <span>JSON</span>
+                </div>
+            </div>
+            <div class="tools-title">
+                <h2>Tools & Technologies</h2>
+                <p class="tools-sub-title">Technologies and tools I regularly use to build, test, and deploy my work.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="quote-container">
+    <blockquote class="end-quote">
+        “After facing some of the hardest chapters in my journey, I chose to rise, not retreat. This website is one of the many ways I’m starting to rebuild and shine again.”
+        <span class="end-author"><p>Moataz Badawy</p></span>
+    </blockquote>
+</div>
+{% endblock %}
+

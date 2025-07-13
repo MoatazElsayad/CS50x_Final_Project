@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<div class="dashboard-row">
+
+    <!-- Aside: Favorite Currency Pairs -->
+    <aside class="dashboard-aside">
+        <div class="dashboard-card favorites-card">
+            <h5 class="dashboard-card-title favorites-title">Favorite Pairs</h5>
+
+            {% if favorites %}
+                {% for pair in favorites %}
+                    <div class="fav-pair" data-from="{{ pair.from_currency }}" data-to="{{ pair.to_currency }}">
+                        <a href="/?from={{ pair.from_currency }}&to={{ pair.to_currency }}&amount=1"
+                        class="fav-pair-btn">
+                            <span class="fi fi-{{ currency_info[pair.from_currency].flag }}"></span>{{ pair.from_currency }} →
+                            <span class="fi fi-{{ currency_info[pair.to_currency].flag }}"></span>{{ pair.to_currency }}
+                            <span class="fav-pair-rate">
+                                {% if pair.rate != "N/A" %}
+                                    {{ currency_info[pair.from_currency].symbol }}1 = {{ currency_info[pair.to_currency].symbol }}{{ pair.rate }}
+                                {% else %}
+                                    (rate unavailable)
+                                {% endif %}
+                            </span>
+                        </a>
+                        <button class="remove-favorite-btn" title="Remove from favorites">
+                            <img src="../static/images/bin-icon.svg" alt="Remove" class="remove-icon"/>
+                        </button>
+                    </div>
+                    {% if not loop.last %}
+                        <hr>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="broken-heart-container">
+                    <img class="broken-heart" src="../static/images/broken-heart.svg" alt="Broken Heart">
+                </div>
+                <p class="dashboard-muted">No favorites yet.</p>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main">
+        <h2 class="dashboard-welcome">Welcome back, {{ session['username'] }}!</h2>
+
+        <!-- Conversion Form -->
+        <div class="conversion-card dashboard-convert-card">
+            <h4 class="dashboard-card-title">Quick Convert</h4>
+            <form method="POST" action="/">
+                <div class="conversion-row">
+                    <div class="form-group input-with-symbol">
+                        <input type="number" name="amount" step="0.01" class="amount-input" value="{{ amount or 1 }}" required>
+                        <label class="amount">Amount</label>
+                    </div>
+                    <div class="form-group">
+                        <select name="from_currency" class="currency-select flag-select" id="dashboard-from-currency" required>
+                            {% for code, info in currency_info.items() %}
+                                <option value="{{ code }}" data-flag="{{ info.flag }}">
+                                    {{ code }} - {{ info.currency }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <label class="from">From</label>
+                    </div>
+                    <button type="button" class="switch-btn" onclick="switchDashboardCurrencies()" aria-label="Switch currencies">
+                        <img src="static/images/reverse.svg" class="reverse-icon" alt="Reverse">
+                    </button>
+                    <div class="form-group">
+                        <select name="to_currency" class="currency-select flag-select" id="dashboard-to-currency" required>
+                            {% for code, info in currency_info.items() %}
+                                <option value="{{ code }}" data-flag="{{ info.flag }}">
+                                    {{ code }} - {{ info.currency }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <label class="to">To</label>
+                    </div>
+                </div>
+                <div class="convert-btn-row quick-convert">
+                    <button type="submit" class="convert-btn">Convert</button>
+                <p class="convert-in-main">Go back to the homepage</p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Facts Card -->
+         <div class="dashboard-card facts-card">
+            <h3 class="fact-topic" title="Random Fact. Reload the page to see more!">{{ random_fact["topic"] }}</h3>
+            <div class="fact-text">
+                <p title="Random Fact. Reload the page to see more!">{{ random_fact["text"] }}</p>
+            </div>
+         </div>
+
+        <!-- Recent Conversions Table -->
+        <div class="dashboard-card recent-card">
+            <h5 class="dashboard-card-title">Recent Conversions</h5>
+            {% if history %}
+                <div class="dashboard-table-responsive">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Amount</th>
+                                <th>Result</th>
+                                <th>Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in history %}
+                            <tr>
+                                <td>{{ row.timestamp.split(" ")[0] }}</td>
+                                <td>{{ row.from_currency }}</td>
+                                <td>{{ row.to_currency }}</td>
+                                <td>{{ row.amount }}</td>
+                                <td>{{ row.result }}</td>
+                                <td>{{ row.rate }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="dashboard-muted conversions-muted">No conversions yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Export Button -->
+        <div class="dashboard-export-row">
+            <a href="/export" class="dashboard-btn dashboard-btn-success">
+                <img class="fi" src="../static/images/export.svg"> Export to CSV
+            </a>
+        </div>
+
+        <hr style="margin-top: 2rem;">
+
+        <!-- Delete Account Trigger Button -->
+        <div class="dashboard-delete-row">
+            <button type="button" class="dashboard-btn dashboard-btn-danger" onclick="openDeleteModal()">
+                <img class="fi delete-icon" src="../static/images/bin-icon.svg" alt="Delete Icon">
+                Delete My Account
+            </button>
+        </div>
+
+        <!-- Delete Account Modal -->
+        <div id="deleteAccountModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <h3>Confirm Account Deletion</h3>
+                <p>This action is permanent and cannot be undone. Are you sure you want to delete your account?</p>
+                <div class="modal-buttons">
+                    <form action="/delete" method="POST">
+                        <button type="submit" class="dashboard-btn dashboard-btn-danger">Yes, Delete</button>
+                    </form>
+                    <button class="dashboard-btn dashboard-btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+{% endblock %}
