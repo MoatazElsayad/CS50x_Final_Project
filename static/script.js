@@ -185,7 +185,7 @@ const langs = [
     {
         name: "HTML",
         class: "html",
-        percent: 31.0,
+        percent: 31.1,
         image: "html.svg"
     },
     {
@@ -203,7 +203,7 @@ const langs = [
     {
         name: "Python",
         class: "py",
-        percent: 25.7,
+        percent: 25.6,
         image: "python.svg"
     }
 ]
