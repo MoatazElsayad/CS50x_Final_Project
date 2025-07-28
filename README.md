@@ -61,6 +61,24 @@ pip install -r requirements.txt
 export FLASK_APP=app.py
 export FLASK_ENV=development
 
-4. **Run the app**
+5. **Run the app**
 flask run
 Visit http://127.0.0.1:5000 in your browser.
+
+---
+
+📌 Notes
+You’ll need internet access to fetch data from the ExchangeRate-API.
+
+The app uses SQLite for local storage (easily upgradeable to PostgreSQL/MySQL).
+
+Security is handled via Flask sessions, password hashing, and CSRF protection.
+
+📎 Link to Repository
+🔗 GitHub Repo: https://github.com/MoatazElsayad/CS50x_Final_Project
+
+Thank you for checking out my final project! I hope you enjoy using it as much as I enjoyed building it.
+
+---
+
+Let me know if you want to personalize the "random facts" or "fun messages" more, or need help with the YouTube caption or CS50 form.
