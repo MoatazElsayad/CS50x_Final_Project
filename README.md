@@ -67,14 +67,14 @@ Visit http://127.0.0.1:5000 in your browser.
 
 ---
 
-📌 Notes
+## 📌 Notes
 You’ll need internet access to fetch data from the ExchangeRate-API.
 
 The app uses SQLite for local storage (easily upgradeable to PostgreSQL/MySQL).
 
 Security is handled via Flask sessions, password hashing, and CSRF protection.
 
-📎 Link to Repository
+## 📎 Link to Repository
 🔗 GitHub Repo: https://github.com/MoatazElsayad/CS50x_Final_Project
 
 Thank you for checking out my final project! I hope you enjoy using it as much as I enjoyed building it.
